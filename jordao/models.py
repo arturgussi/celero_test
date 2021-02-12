@@ -42,8 +42,8 @@ class Event(models.Model):
 
 
 class Game(models.Model):
-    idseason = models.ForeignKey('Season', models.DO_NOTHING, db_column='idSeason', blank=True, null=True, related_name='seasons')  # Field name made lowercase.
-    idcity = models.ForeignKey(City, models.DO_NOTHING, db_column='idCity', blank=True, null=True, related_name='cities')  # Field name made lowercase.
+    idseason = models.ForeignKey('Season', models.DO_NOTHING, db_column='idSeason', blank=True, null=True)  # Field name made lowercase.
+    idcity = models.ForeignKey(City, models.DO_NOTHING, db_column='idCity', blank=True, null=True)  # Field name made lowercase.
     game = models.CharField(max_length=255, blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
 

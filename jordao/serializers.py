@@ -7,22 +7,33 @@ class AthleteSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'sex']
 
 class SeasonSerializer(serializers.ModelSerializer):
+    #games = GameSerializer(read_only=True,many=True)
+
     class Meta:
         model = Season
-        fields = ['id', 'season']
+        fields = '__all__'
+        read_only_field = ['id']
 
 class CitySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = City
         fields = ['id', 'city']
 
+
 class GameSerializer(serializers.ModelSerializer):
-    season = SeasonSerializer(source=seasons)
-    city = CitySerializer(source=cities)
+    citys = CitySerializer(many=False)
+    #seasons = SeasonSerializer(read_only=True, many=True)
 
     class Meta:
         model = Game
-        fields = ['id', 'season', 'city', 'game', 'year']
-
-
+        fields = ['id', 'game', 'year', 'citys']
         
+    def create(self, validated_data):
+        city_data = validated_data.pop('citys')
+        game = Game.objects.create(idcity=City.objects.get(id=citys["city"]), **validated_data))
+        game.save()
+        serializer = GameSerializer(game)
+
+        return Response(serializer.data)
+    
