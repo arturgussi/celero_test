@@ -57,7 +57,7 @@ class GameSerializer(serializers.ModelSerializer):
         c, o = City.objects.get_or_create(**city_data)
         season_data = validated_data.pop('seasons')
         s, o = Season.objects.get_or_create(**season_data)
-        game = Game.objects.create(idcity=c, idseason=s, **validated_data)
+        game, o = Game.objects.get_or_create(idcity=c, idseason=s, **validated_data)
         return game
 
 class GameeventRlSerializer(serializers.ModelSerializer):
@@ -66,12 +66,13 @@ class GameeventRlSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GameeventRl
-        fields = ['id', 'games', 'events']
+        fields = ['id', 'games', 'events', 'idgame', 'idevent']
+        read_only_fields = ['idgame', 'idevent']
 
     def create(self, validated_data):
         game_data = validated_data.pop('games')
         event_data = validated_data.pop('events')
-        game = Game.objects.get_or_create(**game_data)
-        event = Event.objects.get_or_create(**event_data)
-        gameeventrl = GameeventRl.objects.get_or_create(idgame=game, idevent=event)
+        game, o = Game.objects.create(**game_data)
+        event, u = Event.objects.get_or_create(**event_data)
+        gameeventrl, y = GameeventRl.objects.get_or_create(idgame=game, idevent=event)
         return gameeventrl
