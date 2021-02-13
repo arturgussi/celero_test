@@ -46,4 +46,3 @@ class AthletegameeventRlViews(viewsets.ModelViewSet):
     queryset = AthletegameeventRl.objects.all()
     serializer_class = AthletegameeventRlSerializer
     
-class CSVUpload(APIView):

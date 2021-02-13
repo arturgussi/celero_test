@@ -18,7 +18,7 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from jordao.views import AthleteView, GameView, SeasonView, CityView, SportView, EventView, TeamView, Teste
+from jordao.views import *
 
 router = routers.DefaultRouter()
 router.register('athletes', AthleteView, basename='Athlete')
@@ -29,6 +29,7 @@ router.register('sports', SportView, basename='Sport')
 router.register('teams', TeamView, basename='Team')
 router.register('events', EventView, basename='Event')
 router.register('teste', Teste, basename='Teste')
+router.register('main', AthletegameeventRlViews, basename='Master')
 
 
 urlpatterns = [
