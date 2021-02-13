@@ -1,7 +1,9 @@
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework_csv import renderers
 
-from .serializers    import AthleteSerializer, GameSerializer, SeasonSerializer, CitySerializer, SportSerializer, EventSerializer, TeamSerializer, GameeventRlSerializer
-from .models         import Athlete, Game, Season, City, Sport, Event, Team, GameeventRl
+from .serializers    import *
+from .models         import *
 
 # Create your views here.
 class AthleteView(viewsets.ModelViewSet):
@@ -39,3 +41,9 @@ class EventView(viewsets.ModelViewSet):
 class Teste(viewsets.ModelViewSet):
     queryset = GameeventRl.objects.all()
     serializer_class = GameeventRlSerializer
+
+class AthletegameeventRlViews(viewsets.ModelViewSet):
+    queryset = AthletegameeventRl.objects.all()
+    serializer_class = AthletegameeventRlSerializer
+    
+class CSVUpload(APIView):
