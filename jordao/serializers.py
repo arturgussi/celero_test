@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.response import Response
-from .models import Athlete, City, Season, Game, Sport, Event
+from .models import Athlete, City, Season, Game, Sport, Event, Team, GameeventRl
 
 class AthleteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,11 +8,10 @@ class AthleteSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'sex']
 
 class SeasonSerializer(serializers.ModelSerializer):
-    #games = GameSerializer(read_only=True,many=True)
 
     class Meta:
         model = Season
-        fields = '__all__'
+        fields = ['id', 'season']
 
 class CitySerializer(serializers.ModelSerializer):
 
@@ -20,6 +19,29 @@ class CitySerializer(serializers.ModelSerializer):
         model = City
         fields = ['id', 'city']
 
+class SportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sport
+        fields = ['id', 'sport']
+    
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ['id', 'team', 'noc']
+
+class EventSerializer(serializers.ModelSerializer):
+    sports = SportSerializer(many=False, write_only=True)
+    
+    class Meta:
+        model = Event
+        fields = ['id', 'event', 'sports', 'idsport']
+        read_only = ['idsport']
+
+    def create(self, validated_data):
+        sport_data = validated_data.pop('sports')
+        s, o = Sport.objects.get_or_create(**sport_data)
+        event, u = Event.objects.get_or_create(idsport=s, **validated_data)
+        return event
 
 class GameSerializer(serializers.ModelSerializer):
     cities = CitySerializer(many=False, write_only=True)
@@ -38,12 +60,18 @@ class GameSerializer(serializers.ModelSerializer):
         game = Game.objects.create(idcity=c, idseason=s, **validated_data)
         return game
 
-class SportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sport
-        fields = ['id', 'sport']
+class GameeventRlSerializer(serializers.ModelSerializer):
+    games = GameSerializer(many=False, write_only=True)
+    events = EventSerializer(many=False, write_only=True)
 
-class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Event
-        fields = ['id', 'event', 'idsport']
+        model = GameeventRl
+        fields = ['id', 'games', 'events']
+
+    def create(self, validated_data):
+        game_data = validated_data.pop('games')
+        event_data = validated_data.pop('events')
+        game = Game.objects.get_or_create(**game_data)
+        event = Event.objects.get_or_create(**event_data)
+        gameeventrl = GameeventRl.objects.get_or_create(idgame=game, idevent=event)
+        return gameeventrl

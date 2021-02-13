@@ -48,7 +48,7 @@ class Game(models.Model):
     year = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'game'
 
 
@@ -84,3 +84,4 @@ class Team(models.Model):
     class Meta:
         managed = False
         db_table = 'team'
+        

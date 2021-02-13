@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .serializers    import AthleteSerializer, GameSerializer, SeasonSerializer, CitySerializer, SportSerializer, EventSerializer
-from .models         import Athlete, Game, Season, City, Sport, Event
+from .serializers    import AthleteSerializer, GameSerializer, SeasonSerializer, CitySerializer, SportSerializer, EventSerializer, TeamSerializer, GameeventRlSerializer
+from .models         import Athlete, Game, Season, City, Sport, Event, Team, GameeventRl
 
 # Create your views here.
 class AthleteView(viewsets.ModelViewSet):
@@ -28,6 +28,14 @@ class SportView(viewsets.ModelViewSet):
     queryset = Sport.objects.all()
     serializer_class = SportSerializer
 
+class TeamView(viewsets.ModelViewSet):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+
 class EventView(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+class Teste(viewsets.ModelViewSet):
+    queryset = GameeventRl.objects.all()
+    serializer_class = GameeventRlSerializer
