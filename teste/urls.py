@@ -18,13 +18,15 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from jordao.views import AthleteView, GameView, SeasonView, CityView
+from jordao.views import AthleteView, GameView, SeasonView, CityView, SportView, EventView
 
 router = routers.DefaultRouter()
 router.register('athletes', AthleteView, basename='Athlete')
 router.register('seasons', SeasonView, basename='Season')
 router.register('cities', CityView, basename='City')
 router.register('games', GameView, basename='Game')
+router.register('sports', SportView, basename='Sport')
+router.register('events', EventView, basename='Event')
 
 
 urlpatterns = [

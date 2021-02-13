@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Athlete, City, Season, Game
+from rest_framework.response import Response
+from .models import Athlete, City, Season, Game, Sport, Event
 
 class AthleteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,7 +13,6 @@ class SeasonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Season
         fields = '__all__'
-        read_only_field = ['id']
 
 class CitySerializer(serializers.ModelSerializer):
 
@@ -22,18 +22,28 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class GameSerializer(serializers.ModelSerializer):
-    citys = CitySerializer(many=False)
-    #seasons = SeasonSerializer(read_only=True, many=True)
+    cities = CitySerializer(many=False, write_only=True)
+    seasons = SeasonSerializer(many=False, write_only=True)
 
     class Meta:
         model = Game
-        fields = ['id', 'game', 'year', 'citys']
+        fields = ['id', 'game', 'year', 'cities', 'seasons', 'idseason', 'idcity']
+        read_only = ['idcity', 'idseason']
         
     def create(self, validated_data):
-        city_data = validated_data.pop('citys')
-        game = Game.objects.create(idcity=City.objects.get(id=citys["city"]), **validated_data))
-        game.save()
-        serializer = GameSerializer(game)
+        city_data = validated_data.pop('cities')
+        c, o = City.objects.get_or_create(**city_data)
+        season_data = validated_data.pop('seasons')
+        s, o = Season.objects.get_or_create(**season_data)
+        game = Game.objects.create(idcity=c, idseason=s, **validated_data)
+        return game
 
-        return Response(serializer.data)
-    
+class SportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sport
+        fields = ['id', 'sport']
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id', 'event', 'idsport']
